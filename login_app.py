@@ -55,7 +55,10 @@ def meta_agent():
         abnormal_metrics = []
 
     # Combine abnormal metrics into a single context string
-    context = "\n".join(abnormal_metrics) if abnormal_metrics else "No abnormal health metrics recorded."
+    # context = "\n".join(abnormal_metrics) if abnormal_metrics else "No abnormal health metrics recorded."
+
+    context_entries = abnormal_metrics[-10:]
+    context_text = "\n".join(context_entries)
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -72,15 +75,17 @@ def meta_agent():
         st.session_state.messages.append({"role": "user", "content": user_input})
 
         # Prepare conversation prompt including RAG context
-        conversation_text = f"### Context from Health Metrics:\n{context}\n\n"
-        for m in st.session_state.messages:
+        conversation_text = ""
+        for m in st.session_state.messages[-5:]:
             if m["role"] == "user":
                 conversation_text += f"### Instruction:\n{m['content']}\n### Response:\n"
             else:
                 conversation_text += f"{m['content']}\n"
+                
+        prompt = f"Here are recent abnormal health metrics:\n{context_text}\n\nConversation:\n{conversation_text}"
 
         # Generate response
-        output = llm(prompt=conversation_text, max_tokens=200)
+        output = llm(prompt=prompt, max_tokens=200)
         bot_reply = output['choices'][0]['text'].strip()
         st.session_state.messages.append({"role": "assistant", "content": bot_reply})
 
