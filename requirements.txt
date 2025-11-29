@@ -5,4 +5,6 @@ google-generativeai
 Pillow
 pandas
 matplotlib
+llama-cpp-python==0.3.16
+
 
