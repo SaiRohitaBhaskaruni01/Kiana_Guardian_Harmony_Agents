@@ -44,7 +44,7 @@ def meta_agent():
     from llama_cpp import Llama
     import google.generativeai as genai
 
-    llm = Llama(model_path="./models/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf", n_ctx=512)
+    llm = Llama(model_path="./models/tinyllama.gguf", n_ctx=512)
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
