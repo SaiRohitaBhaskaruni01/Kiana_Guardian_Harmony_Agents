@@ -66,8 +66,19 @@ def meta_agent():
     except Exception as e:
         st.warning(f"Could not fetch abnormal metrics from Firestore: {e}")
 
+    flat_entries = []
+
+    for entry in abnormal_entries[-max_entries:]:
+        if isinstance(entry, dict):
+            # Convert dict to string
+            flat_entries.append(", ".join(f"{k}: {v}" for k, v in entry.items()))
+        else:
+            flat_entries.append(str(entry))
+
+    truncated_context = "\n".join(flat_entries) if flat_entries else "No abnormal health metrics recorded."
+
     # --- Prepare truncated RAG context ---
-    truncated_context = "\n".join(abnormal_entries[-max_entries:]) if abnormal_entries else "No abnormal health metrics recorded."
+    # truncated_context = "\n".join(abnormal_entries[-max_entries:]) if abnormal_entries else "No abnormal health metrics recorded."
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
